@@ -13,6 +13,7 @@ import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.time.Duration;
 
 @RestController
 @Validated
@@ -39,6 +40,11 @@ public class FoodController {
     @GetMapping("")
     public Flux<Food> getFood() {
         return foodService.getAllFood();
+    }
+
+    @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<Food> getFoodStream() {
+        return foodService.getAllFood().delayElements(Duration.ofMillis(1000));
     }
 
     @GetMapping("/{id}")

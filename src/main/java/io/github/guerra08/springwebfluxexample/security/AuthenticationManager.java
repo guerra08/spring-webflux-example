@@ -26,7 +26,6 @@ public class AuthenticationManager implements ReactiveAuthenticationManager {
     public Mono<Authentication> authenticate(Authentication authentication) {
         try {
             Jws<Claims> claimsJws = jwtProvider.validateJwt(authentication.getCredentials().toString());
-            System.out.println(claimsJws.getBody());
             return Mono.just(new UsernamePasswordAuthenticationToken(
                     claimsJws.getBody().getSubject(),
                     authentication.getCredentials().toString(),

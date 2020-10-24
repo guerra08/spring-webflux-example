@@ -14,10 +14,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 @Getter
 @Setter
 class UserCredentials{
+    @NotEmpty
+    @NotNull
     private String username;
+    @NotEmpty
+    @NotNull
     private String password;
 }
 
@@ -37,7 +45,7 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public Mono<ResponseEntity<Object>> login(@RequestBody UserCredentials user){
+    public Mono<ResponseEntity<Object>> login(@RequestBody @Valid UserCredentials user){
         return reactiveUserDetailsService.findByUsername(user.getUsername())
                 .map(e -> {
                     if(passwordEncoder.matches(user.getPassword(), e.getPassword())){
@@ -56,7 +64,8 @@ public class AuthController {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
                 })
-                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()));
+                .switchIfEmpty(Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()))
+                .doOnError(e -> Mono.just(ResponseEntity.badRequest().build()));
     }
 
 }

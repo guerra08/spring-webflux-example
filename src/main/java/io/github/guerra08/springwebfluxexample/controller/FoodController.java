@@ -42,7 +42,7 @@ public class FoodController {
     }
 
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<Food>> getFoodById(@PathVariable Long id){
+    public Mono<ResponseEntity<Food>> getFoodById(@PathVariable Long id) {
         return foodService.getById(id)
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());

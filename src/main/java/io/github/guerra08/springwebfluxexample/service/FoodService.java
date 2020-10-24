@@ -24,4 +24,8 @@ public class FoodService {
     public Flux<Food> getAllFood(){
         return foodRepository.findAll();
     }
+
+    public Mono<Food> getById(Long id){
+        return foodRepository.findById(id);
+    }
 }
